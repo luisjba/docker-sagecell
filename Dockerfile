@@ -1,5 +1,4 @@
-#FROM sagemath/sagemath:8.7
-FROM sagemath/sagemath-develop
+FROM sagemath/sagemath:8.7
 MAINTAINER "Jose Luis Bracamonte Amavizca <luisjba@gmail.com>"
 
 ARG SAGECELL_SRC_TARGET=/opt
@@ -14,9 +13,8 @@ COPY config/sshd_config /tmp/
 
 # Packages needed for sagecell
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    wget build-essential gfortran automake m4 dpkg-dev sudo python libssl-dev git \
     openssh-server locales \
-    ca-certificates nodejs-dev node-gyp npm \
+    nodejs-dev node-gyp npm git\
     && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
     && locale-gen \
     && npm install -g requirejs \
