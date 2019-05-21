@@ -25,11 +25,13 @@ export MAKE="make -j${N_CORES}"
 sudo -H -E -u sage /usr/bin/sage -pip install lockfile paramiko sockjs-tornado sqlalchemy || exit 1
 
 cd "$SAGECELL_SRC_TARGET" \
-&& git clone --depth 1 --branch ${BRANCH} https://github.com/sagemath/sagecell.git \
-&& cd sagecell && git submodule update --init --recursive \
-&& chown -R sage:sage $SAGECELL_SRC_TARGET/sagecell || exit 1
+&& git clone https://github.com/sagemath/sagecell.git \
+&& cd sagecell \
+&& git submodule update --init --recursive \
+&& chown -R sage:sage ./ || exit 1
 
-echo "Run sage make"
+ls -al $SAGECELL_SRC_TARGET/sage/local/lib/python2.7/site-packages/notebook/static/components/jquery-ui/
+
 sudo -H -E -u sage sage -sh -c make || exit 1
 
 # Clean up sagecell artifacts
