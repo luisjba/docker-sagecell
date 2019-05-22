@@ -4,7 +4,7 @@
 # Las Updated: 2019-05-20
 # include libs
 . /usr/local/bin/shell_scripts_lib.sh
-cat >/etc/motd <<EOL
+sudo cat >/etc/motd <<EOL
 v 1.0
  _          _       _      _  _
 | |_  _ _  | | _ _ <_> ___<_>| |_  ___
@@ -18,7 +18,7 @@ SageMath version : `sage -v | head -n 1`
 MAINTAINER: Jose Luis Bracamonte Amavizca. <luisjba@gmail.com>
 -------------------------------------------------------------------------
 EOL
-cat /etc/motd
+sudo cat /etc/motd
 
 function configure_ssh_passwordless(){
     local user_home=/home/sage
@@ -34,7 +34,7 @@ function configure_ssh_passwordless(){
 }
 
 function configure_sagecell(){
-    local $sagecell_config_file=/home/sagecell/config.py
+    local sagecell_config_file=/home/sagecell/config.py
     file_content_string_replace "{SAGECELL_KERNEL_DIR}" $SAGECELL_KERNEL_DIR $sagecell_config_file && \
     file_content_string_replace "{SAGECELL_PROVIDER_SETTINGS_MAX_KERNELS}" $SAGECELL_PROVIDER_SETTINGS_MAX_KERNELS $sagecell_config_file && \
     file_content_string_replace "{SAGECELL_PROVIDER_SETTINGS_PRE_FROKED}" $SAGECELL_PROVIDER_SETTINGS_PRE_FROKED $sagecell_config_file && \
