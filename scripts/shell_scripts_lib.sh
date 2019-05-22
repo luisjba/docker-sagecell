@@ -4,7 +4,7 @@
 # production.
 # MAINTAINER: Jose Luis Bracamonte Amavizca. <luisjba@gmail.com>
 # Date Created: 2019-04-24
-# Las Updated: 2019-05-15
+# Las Updated: 2019-05-22
 
 function current_date(){
     echo $(date +"%Y-%m-%d %T")
@@ -198,7 +198,7 @@ function file_content_string_replace(){
     local match_pattern=$1
     local replace_value=$(echo "$2" | sed "s/\//\\\\\//g")
     local target_file=$3
-    local start_line=$([ -n "$4" ] && echo "$4" || echo "0")
+    local start_line=$([ -n "$4" ] && echo "$4" || echo "1")
     local end_line=$([ -n "$5" ] && echo "$5" || echo "\$")
     if [ -f $target_file ]; then
         sed -i "${start_line},$end_line s/${match_pattern}/${replace_value}/g" $target_file
