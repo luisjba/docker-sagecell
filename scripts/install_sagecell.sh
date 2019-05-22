@@ -30,8 +30,6 @@ cd "$SAGECELL_SRC_TARGET" \
 && git submodule update --init --recursive \
 && chown -R sage:sage ./ || exit 1
 
-ls -al $SAGECELL_SRC_TARGET/sage/local/lib/python2.7/site-packages/notebook/static/components/jquery-ui/
-
 sudo -H -E -u sage sage -sh -c make || exit 1
 
 # Clean up sagecell artifacts
@@ -42,14 +40,13 @@ rm -rf tests
 rm -rf .git
 
 # remove sage artifacts
-cd "$SAGECELL_SRC_TARGET"/sage
-
-make misc-clean
-make -C src/ clean
-
-rm -rf upstream/
-rm -rf src/doc/output/doctrees/
-rm -rf .git
-
-# Strip binaries
-LC_ALL=C find local/lib local/bin -type f -exec strip '{}' ';' 2>&1 | grep -v "File format not recognized" |  grep -v "File truncated" || true
+sage_root_d=$(sage --root)
+if [ -d $sage_root_d ]; then
+  make misc-clean
+  [ -d src ] && make -C src/ clean
+  [ -d upstream ] && rm -rf upstream/
+  [ -d src/doc/output/doctrees ] && rm -rf src/doc/output/doctrees/
+  [ -d .git ] && rm -rf .git
+  # Strip binaries
+  [ -d local/lib ] && LC_ALL=C find local/lib local/bin -type f -exec strip '{}' ';' 2>&1 | grep -v "File format not recognized" |  grep -v "File truncated" || true
+fi
