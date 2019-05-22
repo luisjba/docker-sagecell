@@ -13,28 +13,33 @@ COPY config/sshd_config /tmp/
 
 # Packages needed for sagecell
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    openssh-server locales \
-    nodejs-dev node-gyp npm git\
-    && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
-    && locale-gen \
-    && npm install -g requirejs \
-    && echo "root:Docker!" | chpasswd \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && mv /tmp/sshd_config  /etc/ssh/ \
-    && chmod +x /tmp/*.sh
+  wget build-essential gfortran automake m4 dpkg-dev sudo python libssl-dev git \
+  openssh-server locales \
+  nodejs-dev node-gyp npm \
+  && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
+  && locale-gen \
+  && npm install -g requirejs \
+  && ln -s /usr/bin/nodejs /usr/bin/node \
+  && echo "root:Docker!" | chpasswd \
+  && mv /tmp/sshd_config  /etc/ssh/ \
+  && chmod +x /tmp/*.sh
 
 ENV SHELL /bin/bash
 
 # We do a few things as root in the sagecell install scripts, though the sagecell install
 # itself is done by sudo-ing as the sage user
 RUN echo "Installing  Sagecell for SageMath  version `sage -v | head -n 1`" \
-    && /tmp/install_sagecell.sh $SAGECELL_SRC_TARGET $SAGECELL_BRANCH \
-    && mv /tmp/shell_scripts_lib.sh /usr/local/bin/ \
-    && mv /tmp/init_container.sh /usr/local/bin/init_container \
-    && mv /tmp/sagecell_config.py $SAGECELL_SRC_TARGET/sagecell/config.py \
-    && rm -rf /tmp/* \
-    && sync
+  && /tmp/install_sagecell.sh $SAGECELL_SRC_TARGET $SAGECELL_BRANCH \
+  && mv /tmp/shell_scripts_lib.sh /usr/local/bin/ \
+  && mv /tmp/init_container.sh /usr/local/bin/init_container \
+  && mv /tmp/sagecell_config.py $SAGECELL_SRC_TARGET/sagecell/config.py \
+  && sync
+
+RUN echo "Cleaning the Container" \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
+  && rm -rf /tmp/* \
+  && sync
 
 ENV SAGECELL_PORT 80
 ENV SSH_PORT 2222
@@ -48,5 +53,5 @@ ENV SAGECELL_PROVIDER_SETTINGS_PRE_FROKED_LIMIT_CPU 120
 
 USER sage
 WORKDIR /home/sage/sagecell
-ENTRYPOINT ["/bin/init_container"]
+ENTRYPOINT ["init_container"]
 CMD ["sage", "web_server.py -p $SAGECELL_PORT"]
