@@ -1,16 +1,10 @@
-#!/bin/bash
+#!/bin/bash -x
 # !!!NOTE!!! This script is intended to be run with root privileges
 # It will run as the 'sage' user when the time is right.
 SAGECELL_SRC_TARGET=${1%/}
-BRANCH=$2
 
 if [ -z $SAGECELL_SRC_TARGET ]; then
   >&2 echo "Must specify a target directory for the sagecell source checkout"
-  exit 1
-fi
-
-if [ -z $BRANCH ]; then
-  >&2 echo "Must specify a branch to install"
   exit 1
 fi
 
@@ -34,6 +28,7 @@ sudo -H -E -u sage sage -sh -c make || exit 1
 
 # Clean up sagecell artifacts
 #
+echo "Cleaning SageCell artifacts"
 rm -rf contrib
 rm -rf doc
 rm -rf tests
@@ -42,6 +37,8 @@ rm -rf .git
 # remove sage artifacts
 sage_root_d=$(sage --root)
 if [ -d $sage_root_d ]; then
+  echo "Cleaning sage artifacts in $sage_root_d "
+  cd $sage_root_d
   make misc-clean
   [ -d src ] && make -C src/ clean
   [ -d upstream ] && rm -rf upstream/
