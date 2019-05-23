@@ -4,7 +4,7 @@
 # production.
 # MAINTAINER: Jose Luis Bracamonte Amavizca. <luisjba@gmail.com>
 # Date Created: 2019-04-24
-# Las Updated: 2019-05-22
+# Las Updated: 2019-05-23
 
 function current_date(){
     echo $(date +"%Y-%m-%d %T")
@@ -174,6 +174,34 @@ function ssh_permission_status(){
     echo "Missing parameter, call this function as $0 host"
     return 1
 }
+
+function ssh_psswordless_configure_localhost(){
+    # arg1: The user home dir
+    # arg2: Optional The key file name
+    local user_home=$1
+    local key_file_name=$([ -n "$2" ] && echo "$2" || echo "id_rsa")
+    if [ -n "$user_home" ]; then
+        if [ -d $user_home ]; then
+            local key_file=${user_home}/.ssh/$key_file_name
+            if [ $(ssh-add -l &> /dev/null; echo $?) -gt 0 ]; then
+                generate_ssh_keys ${user_home}/.ssh $key_file_name \
+                && ssh_agent_configure $key_file \
+                && ssh_add_know_host localhost ${user_home} \
+                && cat ${key_file}.pub > ${user_home}/.ssh/authorized_keys \
+                && echo "Sucefull configure ssh passwordless to localhost"
+                return $?
+                #ssh-copy-id -i ${key_file}.pub localhost
+            fi
+            echo "ssh passwordless already configured"
+            return 0
+        fi
+        echo "$user_home is not valid directory"
+        return 2
+    fi
+    echo "Missing parameter, call this function as $0 user_home [key_file_name]"
+    return 1
+}
+
 # </SSH Fucntions>
 
 # <File Fucntions>
@@ -556,3 +584,9 @@ function apache_configure(){
     return 1
 }
 # </Apache Fucntions>
+
+if [ -n "$1" ] && [ $(type ${1} &> /dev/null; echo $?) -eq 0 ]; then
+    local fn_name=$1
+    shift;
+    ${fn_name} $@
+fi
