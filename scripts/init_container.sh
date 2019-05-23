@@ -1,10 +1,10 @@
 #!/bin/bash
 # MAINTAINER: Jose Luis Bracamonte A. <luisjba@gmail.com>
 # Date Created: 2018-05-08
-# Las Updated: 2019-05-20
+# Las Updated: 2019-05-21
 # include libs
 . /usr/local/bin/shell_scripts_lib.sh
-sudo cat >/etc/motd <<EOL
+cat >/etc/motd <<EOL
 v 1.0
  _          _       _      _  _
 | |_  _ _  | | _ _ <_> ___<_>| |_  ___
@@ -18,41 +18,46 @@ SageMath version : `sage -v | head -n 1`
 MAINTAINER: Jose Luis Bracamonte Amavizca. <luisjba@gmail.com>
 -------------------------------------------------------------------------
 EOL
-sudo cat /etc/motd
+cat /etc/motd
 
+SAGECELL_HOME=/home/sage/sagecell
 function configure_ssh_passwordless(){
     local user_home=/home/sage
     local key_path=${user_home}/.ssh
     local key_file_name=id_rsa
     local key_file=$key_path/$key_file_name
     if [ $(ssh-add -l &> /dev/null; echo $?) -gt 0 ]; then
-        generate_ssh_keys $key_path $key_file_name
-        ssh_agent_configure $key_file
-        ssh_add_know_host localhost ${user_home}
-        ssh-copy-id -i ${key_file}.pub localhost
+        generate_ssh_keys $key_path $key_file_name \
+        && ssh_agent_configure $key_file \
+        && ssh_add_know_host localhost ${user_home} \
+        && cat ${key_file}.pub > ${key_path}/authorized_keys \
+        && echo "Sucefull configure ssh passwordless to localhost"
+        #ssh-copy-id -i ${key_file}.pub localhost
     fi
 }
 
 function configure_sagecell(){
-    local sagecell_config_file=/home/sagecell/config.py
-    file_content_string_replace "{SAGECELL_KERNEL_DIR}" $SAGECELL_KERNEL_DIR $sagecell_config_file && \
-    file_content_string_replace "{SAGECELL_PROVIDER_SETTINGS_MAX_KERNELS}" $SAGECELL_PROVIDER_SETTINGS_MAX_KERNELS $sagecell_config_file && \
-    file_content_string_replace "{SAGECELL_PROVIDER_SETTINGS_PRE_FROKED}" $SAGECELL_PROVIDER_SETTINGS_PRE_FROKED $sagecell_config_file && \
-    file_content_string_replace "{SAGECELL_PROVIDER_SETTINGS_PRE_FROKED_LIMIT_CPU}" $SAGECELL_PROVIDER_SETTINGS_PRE_FROKED_LIMIT_CPU $sagecell_config_file && \
-    file_content_string_replace "{SAGECELL_PROVIDER_INFO_HOST}" $SAGECELL_PROVIDER_INFO_HOST $sagecell_config_file && \
-    file_content_string_replace "{SAGECELL_PROVIDER_INFO_USERNAME}" $SAGECELL_PROVIDER_INFO_USERNAME $sagecell_config_file
+    declare -a sagecell_conf_vars=("SAGECELL_KERNEL_DIR" "SAGECELL_PROVIDER_SETTINGS_MAX_KERNELS" \
+    "SAGECELL_PROVIDER_SETTINGS_PRE_FROKED" "SAGECELL_PROVIDER_SETTINGS_PRE_FROKED_LIMIT_CPU" \
+    "SAGECELL_PROVIDER_INFO_HOST" "SAGECELL_PROVIDER_INFO_USERNAME")
+    for var_name in "${sagecell_conf_vars[@]}"; do
+      echo "{${var_name}} ${!var_name} ${SAGECELL_HOME}/config.py"
+      file_content_string_replace "{${var_name}}" ${!var_name} ${SAGECELL_HOME}/config.py
+    done
+    unset sagecell_conf_vars
 }
 
 function sagecell_setup(){
-    # Continuous Integration Delivery - Setup
-    configure_ssh_passwordless
-    configure_sagecell
-    file_register_environment_variables /etc/profile
+    # Configure and start ssh service
     sed -i "s/SSH_PORT/$SSH_PORT/g" /etc/ssh/sshd_config
     service ssh start
+    configure_sagecell
+    file_register_environment_variables /etc/profile
 }
-
 #calling the sagecell setup
 sagecell_setup
 #CMD entry point
-exec "\$@"
+su - sage
+configure_ssh_passwordless
+cd $SAGECELL_HOME
+exec $@
