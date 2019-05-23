@@ -53,13 +53,15 @@ function sagecell_setup(){
     # Configure and start ssh service
     sed -i "s/SSH_PORT/$SSH_PORT/g" /etc/ssh/sshd_config
     service ssh start
+    # run rsyslog
+    service rsyslog start
     configure_sagecell
     file_register_environment_variables /etc/profile
 }
 #calling the sagecell setup
 sagecell_setup
 #CMD entry point
+cd $SAGECELL_HOME
 su - sage
 configure_ssh_passwordless
-cd $SAGECELL_HOME
 exec $@
