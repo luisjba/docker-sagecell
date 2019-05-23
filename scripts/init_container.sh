@@ -38,11 +38,13 @@ function configure_ssh_passwordless(){
 
 function configure_sagecell(){
     declare -a sagecell_conf_vars=("SAGECELL_KERNEL_DIR" "SAGECELL_PROVIDER_SETTINGS_MAX_KERNELS" \
-    "SAGECELL_PROVIDER_SETTINGS_PRE_FROKED" "SAGECELL_PROVIDER_SETTINGS_PRE_FROKED_LIMIT_CPU" \
-    "SAGECELL_PROVIDER_INFO_HOST" "SAGECELL_PROVIDER_INFO_USERNAME")
+    "SAGECELL_PROVIDER_SETTINGS_PRE_FROKED" "SAGECELL_PROVIDER_SETTINGS_PRE_FROKED_LIMIT_CPU")
     for var_name in "${sagecell_conf_vars[@]}"; do
-      echo "{${var_name}} ${!var_name} ${SAGECELL_HOME}/config.py"
-      file_content_string_replace "{${var_name}}" ${!var_name} ${SAGECELL_HOME}/config.py
+        if [ -n "${!var_name}" ]; then
+            file_content_string_replace "{${var_name}}" ${!var_name} ${SAGECELL_HOME}/config.py
+        else
+            echo "WARNING: Empty value in var \$${var_name}"
+        fi
     done
     unset sagecell_conf_vars
 }
