@@ -184,10 +184,10 @@ function ssh_psswordless_configure_localhost(){
         if [ -d $user_home ]; then
             local key_file=${user_home}/.ssh/$key_file_name
             if [ $(ssh-add -l &> /dev/null; echo $?) -gt 0 ]; then
-                generate_ssh_keys ${user_home}/.ssh $key_file_name \
-                && ssh_agent_configure $key_file \
-                && ssh_add_know_host localhost ${user_home} \
-                && cat ${key_file}.pub > ${user_home}/.ssh/authorized_keys \
+                generate_ssh_keys ${user_home}/.ssh $key_file_name
+                ssh_agent_configure $key_file
+                ssh_add_know_host localhost ${user_home}
+                cat ${key_file}.pub > ${user_home}/.ssh/authorized_keys \
                 && echo "Sucefull configure ssh passwordless to localhost"
                 return $?
                 #ssh-copy-id -i ${key_file}.pub localhost
@@ -585,8 +585,19 @@ function apache_configure(){
 }
 # </Apache Fucntions>
 
-if [ -n "$1" ] && [ $(type ${1} &> /dev/null; echo $?) -eq 0 ]; then
+
+function execute_self_fn(){
     local fn_name=$1
-    shift;
-    ${fn_name} $@
-fi
+    if [ -n "$fn_name" ]; then
+        if [ $(type ${fn_name} &> /dev/null; echo $?) -eq 0 ]; then
+            shift;
+            ${fn_name} $@
+            return $?
+        fi
+        echo "invalid function ${fn_name}"
+        return 1
+    fi
+    return 0
+}
+
+execute_self_fn $@
