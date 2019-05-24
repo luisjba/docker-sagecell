@@ -35,16 +35,16 @@ rm -rf tests
 rm -rf .git
 
 # remove sage artifacts
-# sage_root_d=$(sage --root)
-# if [ -d $sage_root_d ]; then
-#   echo "Cleaning sage artifacts in $sage_root_d "
-#   cd $sage_root_d
-#   make misc-clean
-#   [ -d src ] && make -C src/ clean
-#   [ -d upstream ] && rm -rf upstream/
-#   [ -d src/doc/output/doctrees ] && rm -rf src/doc/output/doctrees/
-#   [ -d .git ] && rm -rf .git
-#   # Strip binaries
-#   [ -d local/lib ] && LC_ALL=C find local/lib local/bin -type f -exec strip '{}' ';' 2>&1 | grep -v "File format not recognized" |  grep -v "File truncated" || true
-# fi
+sage_root_d=$(sage --root)
+if [ -d $sage_root_d ]; then
+  echo "Cleaning sage artifacts in $sage_root_d "
+  cd $sage_root_d
+  make misc-clean
+  [ -d src ] && make -C src/ clean
+  [ -d upstream ] && rm -rf upstream/
+  [ -d src/doc/output/doctrees ] && rm -rf src/doc/output/doctrees/
+  [ -d .git ] && rm -rf .git
+  # Strip binaries
+  [ -d local/lib ] && LC_ALL=C find local/lib local/bin -type f -exec strip '{}' ';' 2>&1 | grep -v "File format not recognized" |  grep -v "File truncated" || true
+fi
 true
