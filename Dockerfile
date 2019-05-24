@@ -40,7 +40,7 @@ RUN echo "Cleaning the Container" \
   && rm -rf /tmp/* \
   && sync
 
-ENV SAGECELL_PORT 80
+ENV SAGECELL_PORT 8888
 ENV SSH_PORT 22
 EXPOSE 80 22
 
@@ -53,4 +53,4 @@ ENV SAGECELL_PROVIDER_SETTINGS_PRE_FROKED_LIMIT_CPU 120
 WORKDIR /home/sage/sagecell
 # Int the entry pint the last command is runnend with the sage user
 ENTRYPOINT ["init_container"]
-CMD ["sage", "web_server.py -p $SAGECELL_PORT"]
+CMD ["sage", "web_server.py","-p $SAGECELL_PORT"]
