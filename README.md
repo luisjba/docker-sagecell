@@ -51,8 +51,7 @@ In this example you can configure the CPU time passing the variable
 SAGECELL_PROVIDER_SETTINGS_PRE_FROKED_LIMIT_CPU
 with your custom value, in this case 5 minutes  (60 * 5)
 
-    docker run -e SAGECELL_PROVIDER_SETTINGS_PRE_FROKED_LIMIT_CPU="60 * 5" -d -p
-    8888:8888 luisjba/sagecell
+    docker run -e SAGECELL_PROVIDER_SETTINGS_PRE_FROKED_LIMIT_CPU="60 * 5" -d -p 8888:8888 luisjba/sagecell
 
 # Run SageMath as application
 
