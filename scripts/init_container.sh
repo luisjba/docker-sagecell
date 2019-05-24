@@ -21,21 +21,6 @@ EOL
 cat /etc/motd
 
 SAGECELL_HOME=/home/sage/sagecell
-function configure_ssh_passwordless(){
-    local user_home=/home/sage
-    local key_path=${user_home}/.ssh
-    local key_file_name=id_rsa
-    local key_file=$key_path/$key_file_name
-    if [ $(ssh-add -l &> /dev/null; echo $?) -gt 0 ]; then
-        generate_ssh_keys $key_path $key_file_name \
-        && ssh_agent_configure $key_file \
-        && ssh_add_know_host localhost ${user_home} \
-        && cat ${key_file}.pub > ${key_path}/authorized_keys \
-        && echo "Sucefull configure ssh passwordless to localhost"
-        #ssh-copy-id -i ${key_file}.pub localhost
-    fi
-}
-
 function configure_sagecell(){
     declare -a sagecell_conf_vars=("SAGECELL_KERNEL_DIR" "SAGECELL_PROVIDER_SETTINGS_MAX_KERNELS" \
     "SAGECELL_PROVIDER_SETTINGS_PRE_FROKED" "SAGECELL_PROVIDER_SETTINGS_PRE_FROKED_LIMIT_CPU")
@@ -62,6 +47,15 @@ function sagecell_setup(){
 sagecell_setup
 #CMD entry point
 cd $SAGECELL_HOME
-su - sage
-configure_ssh_passwordless
-exec $@
+chown -R sage:sage $SAGECELL_HOME
+[ -n "$SAGECELL_KERNEL_DIR" ] && [ ! -d $SAGECELL_KERNEL_DIR ] && mkdir $SAGECELL_KERNEL_DIR && chown -R sage:sage $SAGECELL_KERNEL_DIR
+chown -R sage:sage /home/sage/.sage/
+su sage -c "/usr/local/bin/shell_scripts_lib.sh ssh_psswordless_configure_localhost /home/sage"
+su sage -c "/usr/local/bin/shell_scripts_lib.sh ssh_permission_status localhost &> /dev/null"
+if [ $? -eq 0 ]; then
+    echo "Executing => $@"
+    sudo -H -E -u sage $(eval "echo $@")
+    #su sage -c "$@"
+else
+    echo "ERROR: SageCell server not started. SSH passwordless missconfigured"
+fi
