@@ -19,10 +19,10 @@ export MAKE="make -j${N_CORES}"
 sudo -H -E -u sage /usr/bin/sage -pip install lockfile paramiko sockjs-tornado sqlalchemy || exit 1
 
 cd "$SAGECELL_SRC_TARGET" \
-&& git clone https://github.com/sagemath/sagecell.git \
+&& sudo -H -E -u sage git clone https://github.com/sagemath/sagecell.git \
 && cd sagecell \
-&& git submodule update --init --recursive \
-&& chown -R sage:sage ./ || exit 1
+&& sudo -H -E -u sage git submodule update --init --recursive \
+&& chown -R sage:sage . || exit 1
 
 sudo -H -E -u sage sage -sh -c make || exit 1
 
@@ -35,15 +35,16 @@ rm -rf tests
 rm -rf .git
 
 # remove sage artifacts
-sage_root_d=$(sage --root)
-if [ -d $sage_root_d ]; then
-  echo "Cleaning sage artifacts in $sage_root_d "
-  cd $sage_root_d
-  make misc-clean
-  [ -d src ] && make -C src/ clean
-  [ -d upstream ] && rm -rf upstream/
-  [ -d src/doc/output/doctrees ] && rm -rf src/doc/output/doctrees/
-  [ -d .git ] && rm -rf .git
-  # Strip binaries
-  [ -d local/lib ] && LC_ALL=C find local/lib local/bin -type f -exec strip '{}' ';' 2>&1 | grep -v "File format not recognized" |  grep -v "File truncated" || true
-fi
+# sage_root_d=$(sage --root)
+# if [ -d $sage_root_d ]; then
+#   echo "Cleaning sage artifacts in $sage_root_d "
+#   cd $sage_root_d
+#   make misc-clean
+#   [ -d src ] && make -C src/ clean
+#   [ -d upstream ] && rm -rf upstream/
+#   [ -d src/doc/output/doctrees ] && rm -rf src/doc/output/doctrees/
+#   [ -d .git ] && rm -rf .git
+#   # Strip binaries
+#   [ -d local/lib ] && LC_ALL=C find local/lib local/bin -type f -exec strip '{}' ';' 2>&1 | grep -v "File format not recognized" |  grep -v "File truncated" || true
+# fi
+true
