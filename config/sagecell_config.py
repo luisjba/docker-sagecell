@@ -11,7 +11,7 @@ else:
     sage = "sage"
 
 # Require the user to accept terms of service before evaluation
-requires_tos = True
+requires_tos = {SAGECELL_REQUIRE_TOS}
 
 db = "sqlalchemy"
 db_config = {"uri": "sqlite:///sqlite.db"}
@@ -31,13 +31,13 @@ dir = "{SAGECELL_KERNEL_DIR}"
 
 # Parameters for heartbeat channels checking whether a given kernel is alive.
 # Setting first_beat lower than 1.0 may cause JavaScript errors.
-beat_interval = 0.5
-first_beat = 1.0
+beat_interval = {SAGECELL_BEAT_INTERVAL}
+first_beat = {SAGECELL_FIRST_BEAT}
 
 # Allowed idling between interactions with a kernel
-max_timeout = 60 * 90
+max_timeout = {SAGECELL_MAX_TIMEOUT}
 # Even an actively used kernel will be killed after this time
-max_lifespan = 60 * 119
+max_lifespan = {SAGECELL_MAX_LIFESPAN}
 
 # Recommended settings for kernel providers
 provider_settings = {
