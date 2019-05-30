@@ -40,17 +40,27 @@ RUN echo "Cleaning the Container" \
   && rm -rf /tmp/* \
   && sync
 
-ENV SAGECELL_PORT 8888
+ENV PORT 8888
 ENV SSH_PORT 22
-EXPOSE 80 22
+ENV JN_PORT 8080
+EXPOSE 80 22 8080
 
 # SageCell Configuration
+ENV SAGECELL_REQUIRE_TOS "True"
 ENV SAGECELL_KERNEL_DIR ${SAGECELL_SRC_TARGET}/sagecellkernels
+ENV SAGECELL_BEAT_INTERVAL 0.5
+ENV SAGECELL_FIRST_BEAT 1.0
+ENV SAGECELL_MAX_TIMEOUT "60 * 90"
+ENV SAGECELL_MAX_LIFESPAN "60 * 119"
 ENV SAGECELL_PROVIDER_SETTINGS_MAX_KERNELS 10
 ENV SAGECELL_PROVIDER_SETTINGS_PRE_FROKED 1
 ENV SAGECELL_PROVIDER_SETTINGS_PRE_FROKED_LIMIT_CPU 120
+ENV SAGE_INSTALL_CUSTOM_LIBS ""
+ENV SAGE_LIBS_DIR /home/sage/libs
+ENV SAGE_BUILD_LIB_DIR /home/sage/sage/local/lib/python2.7/site-packages/
+
 
 WORKDIR /home/sage/sagecell
-# Int the entry pint the last command is runnend with the sage user
+# Int the entry pint the lSAGECELL_MAX_TIMEOUTast command is runnend with the sage user
 ENTRYPOINT ["init_container"]
-CMD ["sage", "web_server.py","-p $SAGECELL_PORT"]
+CMD ["sage", "web_server.py","-p $PORT"]
