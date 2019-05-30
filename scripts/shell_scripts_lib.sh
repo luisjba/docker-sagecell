@@ -603,12 +603,12 @@ function execute_self_fn(){
 
 #check if there are any argument
 if [ $# -gt 0 ]; then
-    while getopts :c opt; do
+    while getopts 'c' opt; do
         case $opt in
             c)
-                execute_self_fn ${OPTARG}
+                #echo "-c option detected with ind:$OPTIND arg: $OPTARG"
+                execute_self_fn ${!OPTIND}
             ;;
         esac
     done
 fi
-
