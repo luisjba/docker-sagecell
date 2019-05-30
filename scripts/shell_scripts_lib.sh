@@ -591,6 +591,7 @@ function execute_self_fn(){
     if [ -n "$fn_name" ]; then
         if [ $(type ${fn_name} &> /dev/null; echo $?) -eq 0 ]; then
             shift;
+            echo "Executing ${fn_name} $@"
             ${fn_name} $@
             return $?
         fi
@@ -600,4 +601,14 @@ function execute_self_fn(){
     return 0
 }
 
-execute_self_fn $@
+#check if there are any argument
+if [ $# -gt 0 ]; then
+    while getopts :c opt; do
+        case $opt in
+            c)
+                execute_self_fn ${OPTARG}
+            ;;
+        esac
+    done
+fi
+
