@@ -94,8 +94,8 @@ chown -R sage:sage /home/sage/.sage/
 sage_install_custom_libraries
 load_extra_sage_libs
 [ $? -eq 0 ] && chown -R sage:sage  ${SAGE_LIBS_DIR}
-su sage -c "/usr/local/bin/shell_scripts_lib.sh ssh_psswordless_configure_localhost /home/sage"
-su sage -c "/usr/local/bin/shell_scripts_lib.sh ssh_permission_status localhost &> /dev/null"
+su sage -c "/usr/local/bin/shell_scripts_lib.sh -c 'ssh_psswordless_configure_localhost' /home/sage"
+su sage -c "/usr/local/bin/shell_scripts_lib.sh -c 'ssh_permission_status localhost' &> /dev/null"
 if [ $? -eq 0 ]; then
     echo "Executing => $@"
     sudo -H -E -u sage $(eval "echo $@")
