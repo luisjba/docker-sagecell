@@ -186,4 +186,4 @@ If this project was usefull for you and you want to thanks me you can buy me a c
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVCZHZPGL7E2U&source=url)
 
-![Donate QR Code ](images/Donate_QR_Code.png)
+[![Donate QR Code](images/Donate_QR_Code.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVCZHZPGL7E2U&source=url)
