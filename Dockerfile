@@ -1,4 +1,4 @@
-FROM sagemath/sagemath:8.7
+FROM sagemath/sagemath:8.8
 MAINTAINER "Jose Luis Bracamonte Amavizca <luisjba@gmail.com>"
 
 ARG SAGECELL_SRC_TARGET=/home/sage
