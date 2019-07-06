@@ -179,3 +179,9 @@ For better configuration to allow connections to the notebook through the Docker
     
 If you set a different port than default (8080) for Jupyter Notebook, be sure to connect and expose 
 them in the `-p [host_port]:[container_port]` option when running the container.
+
+## Donate
+
+If this project was usefull for you and you want to thanks me you can buy me a coffe.
+
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVCZHZPGL7E2U&source=url)
