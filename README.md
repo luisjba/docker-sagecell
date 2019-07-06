@@ -1,12 +1,16 @@
 # Docker SageMathCell (SageCell)
 
-This is a dockerized SageMathCell - a Sage computation web service. 
-This image was builded using the oficial docker sagemath image 
-[sagemath/sagemath](https://hub.docker.com/r/sagemath/sagemath) and 
-installed the latest [sagecell](https://github.com/sagemath/sagecell) and providing 
-customization to the sagecell that includes:
+This is a Dockerized SageMathCell - a Sage computation web service. 
+This image was built using the oficial sagemath 
+[docker image sagemath/sagemath](https://hub.docker.com/r/sagemath/sagemath) and 
+installed the latest [sagecell](https://github.com/sagemath/sagecell) providing with the sage version 8.7 and 8.8 (latest) in the docker hub tags `sage_8.7_v1.0`, `sage_8.7_v1.1` , `sage_8.8_v1.0` and `latest`.
+
+
+With this image you can perform your customization into sage and sagecell to:
 - Install extra libraries into sage with pip.
 - Install custom libraries into sage mounting a volume.
+- Run Jupiter Notebook and SageCell at the same time.
+- Use sage as application into you shell.
 
 ### Installation
 
